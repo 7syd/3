@@ -1,51 +1,142 @@
-CREATE TABLE Borrower(
-Roll_no INT(3),
-Name VARCHAR(20),
-Date_of_Issue DATE,
-Name_of_Book VARCHAR(20),
- Status CHAR(1));
+mysql> use sql4;
+Database changed
+mysql> CREATE TABLE Borrower(
+    -> Roll_no INT PRIMARY KEY,
+    -> Name VARCHAR(100),
+    -> Date_of_issue DATE,
+    -> Name_of_Book VARCHAR(100),
+    -> Status VARCHAR(5));
+Query OK, 0 rows affected (0.02 sec)
 
-CREATE TABLE Fine(
-Roll_no INT(3),
-C_date DATE,
-Amt DECIMAL(4,2));
+mysql> CREATE TABLE Fine(
+    -> Roll_no INT,
+    -> Date DATE,
+    -> Amt DECIMAL(10,2));
+Query OK, 0 rows affected (0.01 sec)
 
-INSERT INTO Borrower VALUES(101,"sidd",'2023-09-1','M2','I');
+mysql> INSERT INTO Borrower
+    -> VALUES
+    -> (12, 'Shantanu', '2023-08-23', 'Java', 'I'),
+    -> (13, 'Harshal', '2023-09-20', 'c++', 'I'),
+    -> (43, 'Ashish', '2023-09-19', 'Python', 'I'),
+    -> (33, 'Vedant', '2023-08-30', 'Javascript', 'I'),
+    -> (45, 'Dhiraj', '2023-08-01', 'HTML AND  CSS', 'I');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
 
-INSERT INTO Borrower VALUES(102,"aryan",'2023-08-1','AI','I');
+mysql> desc borrower;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| Roll_no       | int          | NO   | PRI | NULL    |       |
+| Name          | varchar(100) | YES  |     | NULL    |       |
+| Date_of_issue | date         | YES  |     | NULL    |       |
+| Name_of_Book  | varchar(100) | YES  |     | NULL    |       |
+| Status        | varchar(5)   | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
 
-INSERT INTO Borrower VALUES(103,"aron",'2023-09-20','DM','I');
+mysql> desc fine;
++---------+---------------+------+-----+---------+-------+
+| Field   | Type          | Null | Key | Default | Extra |
++---------+---------------+------+-----+---------+-------+
+| Roll_no | int           | YES  |     | NULL    |       |
+| Date    | date          | YES  |     | NULL    |       |
+| Amt     | decimal(10,2) | YES  |     | NULL    |       |
++---------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
 
-DELIMITER $$
+mysql> select *from borrower;
++---------+----------+---------------+---------------+--------+
+| Roll_no | Name     | Date_of_issue | Name_of_Book  | Status |
++---------+----------+---------------+---------------+--------+
+|      12 | Shantanu | 2023-08-23    | Java          | I      |
+|      13 | Harshal  | 2023-09-20    | c++           | I      |
+|      33 | Vedant   | 2023-08-30    | Javascript    | I      |
+|      43 | Ashish   | 2023-09-19    | Python        | I      |
+|      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | I      |
++---------+----------+---------------+---------------+--------+
+5 rows in set (0.01 sec)
 
-CREATE PROCEDURE ReturnBook(IN PRoll_No INT)
-BEGIN
-DECLARE fine_amt INT;
-DECLARE no_of_days INT;
-DECLARE issuedate DATE;
-SELECT Date_of_Issue
-INTO issuedate
-FROM Borrower
-WHERE
-Roll_no = PRoll_No;
+mysql> select *from fine;
+Empty set (0.01 sec)
 
-SET no_of_days = DATEDIFF(CURRENT_DATE(),issuedate);
+mysql> delimiter $$
+mysql> create procedure returnBook(IN PRoll_No INT)
+    -> BEGIN
+    -> declare fine_amt INT;
+    -> declare no_of_days INT;
+    -> declare issuedate DATE;
+    -> SELECT Date_of_Issue
+    -> INTO issuedate
+    -> FROM borrower
+    -> where
+    -> Roll_no = PRoll_No;
+    ->
+    -> SET no_of_days = DATEDIFF(CURRENT_DATE, issuedate);
+    ->
+    -> IF no_of_days < 15 THEN
+    ->  SET fine_amt = 0;
+    -> ELSEIF no_of_days >= 15 AND no_of_days <=30 THEN
+    ->  SET fine_amt = 5;
+    -> ELSE
+    ->  SET fine_amt = 50;
+    -> END IF;
+    ->
+    -> INSERT INTO fine(Roll_no, Date, Amt) values (PRoll_No, CURRENT_DATE(), fine_amt);
+    -> UPDATE Borrower SET Status = "R" where Roll_no = PRoll_No;
+    -> END $$
+Query OK, 0 rows affected (0.02 sec)
 
-IF no_of_days < 15 THEN
-  SET fine_amt = 0;
-ELSEIF no_of_days >= 15 AND no_of_days <= 30 THEN
-  SET fine_amt = 5;
-ELSE
-  SET fine_amt = 50;
-END IF;
+mysql> select *from borrower;
++---------+----------+---------------+---------------+--------+
+| Roll_no | Name     | Date_of_issue | Name_of_Book  | Status |
++---------+----------+---------------+---------------+--------+
+|      12 | Shantanu | 2023-08-23    | Java          | I      |
+|      13 | Harshal  | 2023-09-20    | c++           | I      |
+|      33 | Vedant   | 2023-08-30    | Javascript    | I      |
+|      43 | Ashish   | 2023-09-19    | Python        | I      |
+|      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | I      |
++---------+----------+---------------+---------------+--------+
+5 rows in set (0.00 sec)
 
-INSERT INTO Fine(Roll_No,C_date,Amt) VALUES (PRoll_No, CURRENT_DATE(), fine_amt);
-UPDATE Borrower SET status = 'R' WHERE Roll_no = PRoll_NO;
-END $$
+mysql> CALL returnBook(12);
+Query OK, 1 row affected (0.01 sec)
 
-DELIMITER ;
-SELECT *FROM Borrower;
-CALL ReturnBook(101);
-CALL ReturnBook(102);
-CALL ReturnBook(103);
-SELECT *FROM Fine;
+mysql> CALL returnBook(33);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CALL returnBook(43);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CALL returnBook(45);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CALL returnBook(13);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select *from fine;
++---------+------------+-------+
+| Roll_no | Date       | Amt   |
++---------+------------+-------+
+|      12 | 2023-10-10 | 50.00 |
+|      33 | 2023-10-10 | 50.00 |
+|      43 | 2023-10-10 |  5.00 |
+|      45 | 2023-10-10 | 50.00 |
+|      13 | 2023-10-10 |  5.00 |
++---------+------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select *from borrower;
++---------+----------+---------------+---------------+--------+
+| Roll_no | Name     | Date_of_issue | Name_of_Book  | Status |
++---------+----------+---------------+---------------+--------+
+|      12 | Shantanu | 2023-08-23    | Java          | R      |
+|      13 | Harshal  | 2023-09-20    | c++           | R      |
+|      33 | Vedant   | 2023-08-30    | Javascript    | R      |
+|      43 | Ashish   | 2023-09-19    | Python        | R      |
+|      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | R      |
++---------+----------+---------------+---------------+--------+
+5 rows in set (0.00 sec)
+
+
