@@ -1,18 +1,18 @@
 mysql> use sql4;
-Database changed
+
 mysql> CREATE TABLE Borrower(
     -> Roll_no INT PRIMARY KEY,
     -> Name VARCHAR(100),
     -> Date_of_issue DATE,
     -> Name_of_Book VARCHAR(100),
     -> Status VARCHAR(5));
-Query OK, 0 rows affected (0.02 sec)
+
 
 mysql> CREATE TABLE Fine(
     -> Roll_no INT,
     -> Date DATE,
     -> Amt DECIMAL(10,2));
-Query OK, 0 rows affected (0.01 sec)
+
 
 mysql> INSERT INTO Borrower
     -> VALUES
@@ -21,45 +21,7 @@ mysql> INSERT INTO Borrower
     -> (43, 'Ashish', '2023-09-19', 'Python', 'I'),
     -> (33, 'Vedant', '2023-08-30', 'Javascript', 'I'),
     -> (45, 'Dhiraj', '2023-08-01', 'HTML AND  CSS', 'I');
-Query OK, 5 rows affected (0.01 sec)
-Records: 5  Duplicates: 0  Warnings: 0
 
-mysql> desc borrower;
-+---------------+--------------+------+-----+---------+-------+
-| Field         | Type         | Null | Key | Default | Extra |
-+---------------+--------------+------+-----+---------+-------+
-| Roll_no       | int          | NO   | PRI | NULL    |       |
-| Name          | varchar(100) | YES  |     | NULL    |       |
-| Date_of_issue | date         | YES  |     | NULL    |       |
-| Name_of_Book  | varchar(100) | YES  |     | NULL    |       |
-| Status        | varchar(5)   | YES  |     | NULL    |       |
-+---------------+--------------+------+-----+---------+-------+
-5 rows in set (0.01 sec)
-
-mysql> desc fine;
-+---------+---------------+------+-----+---------+-------+
-| Field   | Type          | Null | Key | Default | Extra |
-+---------+---------------+------+-----+---------+-------+
-| Roll_no | int           | YES  |     | NULL    |       |
-| Date    | date          | YES  |     | NULL    |       |
-| Amt     | decimal(10,2) | YES  |     | NULL    |       |
-+---------+---------------+------+-----+---------+-------+
-3 rows in set (0.00 sec)
-
-mysql> select *from borrower;
-+---------+----------+---------------+---------------+--------+
-| Roll_no | Name     | Date_of_issue | Name_of_Book  | Status |
-+---------+----------+---------------+---------------+--------+
-|      12 | Shantanu | 2023-08-23    | Java          | I      |
-|      13 | Harshal  | 2023-09-20    | c++           | I      |
-|      33 | Vedant   | 2023-08-30    | Javascript    | I      |
-|      43 | Ashish   | 2023-09-19    | Python        | I      |
-|      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | I      |
-+---------+----------+---------------+---------------+--------+
-5 rows in set (0.01 sec)
-
-mysql> select *from fine;
-Empty set (0.01 sec)
 
 mysql> delimiter $$
 mysql> create procedure returnBook(IN PRoll_No INT)
@@ -86,34 +48,24 @@ mysql> create procedure returnBook(IN PRoll_No INT)
     -> INSERT INTO fine(Roll_no, Date, Amt) values (PRoll_No, CURRENT_DATE(), fine_amt);
     -> UPDATE Borrower SET Status = "R" where Roll_no = PRoll_No;
     -> END $$
-Query OK, 0 rows affected (0.02 sec)
 
-mysql> select *from borrower;
-+---------+----------+---------------+---------------+--------+
-| Roll_no | Name     | Date_of_issue | Name_of_Book  | Status |
-+---------+----------+---------------+---------------+--------+
-|      12 | Shantanu | 2023-08-23    | Java          | I      |
-|      13 | Harshal  | 2023-09-20    | c++           | I      |
-|      33 | Vedant   | 2023-08-30    | Javascript    | I      |
-|      43 | Ashish   | 2023-09-19    | Python        | I      |
-|      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | I      |
-+---------+----------+---------------+---------------+--------+
-5 rows in set (0.00 sec)
+
+
 
 mysql> CALL returnBook(12);
-Query OK, 1 row affected (0.01 sec)
+
 
 mysql> CALL returnBook(33);
-Query OK, 1 row affected (0.01 sec)
+
 
 mysql> CALL returnBook(43);
-Query OK, 1 row affected (0.01 sec)
+
 
 mysql> CALL returnBook(45);
-Query OK, 1 row affected (0.01 sec)
+
 
 mysql> CALL returnBook(13);
-Query OK, 1 row affected (0.01 sec)
+
 
 mysql> select *from fine;
 +---------+------------+-------+
@@ -125,7 +77,7 @@ mysql> select *from fine;
 |      45 | 2023-10-10 | 50.00 |
 |      13 | 2023-10-10 |  5.00 |
 +---------+------------+-------+
-5 rows in set (0.00 sec)
+
 
 mysql> select *from borrower;
 +---------+----------+---------------+---------------+--------+
@@ -137,6 +89,6 @@ mysql> select *from borrower;
 |      43 | Ashish   | 2023-09-19    | Python        | R      |
 |      45 | Dhiraj   | 2023-08-01    | HTML AND  CSS | R      |
 +---------+----------+---------------+---------------+--------+
-5 rows in set (0.00 sec)
+
 
 
