@@ -1,0 +1,14 @@
+db.CreateCollection('orange')
+db.orange.insertOne({name:"sam",age:19,salary:10000});
+db.orange.insertMany([{name: "sidd",age:20,salary:100000},{name: "vikk",age:20,salary:100500}]);
+db.test.find();
+
+db.test.find({ $and:[{ age:{$gte:20}},{name:"sidd"}]});
+db.test.find({ $or :[{age:{$lt:20}},{name:"sidd"}]});
+db.test.find({ $nor: [{age: {$lt:20}},{name:"sidd"}]});
+db.test.updateOne({name:"sam"},{$set:{age:23}});
+
+db.test.updateMany({salary:100000},{$set:{salary:777777}});
+
+db.test.deleteOne({name:"vikk});
+db.test.deleteMany({age:{$lt:20}});
