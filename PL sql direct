@@ -1,0 +1,74 @@
+use sql4;
+
+CREATE TABLE Borrower(
+       Roll_no INT PRIMARY KEY,
+       Name VARCHAR(100),
+       Date_of_issue DATE,
+       Name_of_Book VARCHAR(100),
+       Status VARCHAR(5));
+
+
+CREATE TABLE Fine(
+       Roll_no INT,
+       Date DATE,
+       Amt DECIMAL(10,2));
+
+
+INSERT INTO Borrower
+       VALUES
+       (12, 'Shantanu', '2023-08-23', 'Java', 'I'),
+       (13, 'Harshal', '2023-09-20', 'c++', 'I'),
+       (43, 'Ashish', '2023-09-19', 'Python', 'I'),
+       (33, 'Vedant', '2023-08-30', 'Javascript', 'I'),
+       (45, 'Dhiraj', '2023-08-01', 'HTML AND  CSS', 'I');
+
+
+delimiter $$
+create procedure returnBook(IN PRoll_No INT)
+       BEGIN
+       declare fine_amt INT;
+       declare no_of_days INT;
+       declare issuedate DATE;
+       SELECT Date_of_Issue
+       INTO issuedate
+       FROM borrower
+       where
+       Roll_no = PRoll_No;
+      
+       SET no_of_days = DATEDIFF(CURRENT_DATE, issuedate);
+     
+       IF no_of_days < 15 THEN
+        SET fine_amt = 0;
+       ELSEIF no_of_days >= 15 AND no_of_days <=30 THEN
+        SET fine_amt = 5;
+       ELSE
+        SET fine_amt = 50;
+       END IF;
+     
+       INSERT INTO fine(Roll_no, Date, Amt) values (PRoll_No, CURRENT_DATE(), fine_amt);
+       UPDATE Borrower SET Status = "R" where Roll_no = PRoll_No;
+       END $$
+
+
+delimiter ;
+
+CALL returnBook(12);
+
+
+CALL returnBook(33);
+
+
+CALL returnBook(43);
+
+
+CALL returnBook(45);
+
+
+CALL returnBook(13);
+
+
+select *from fine;
+
+
+
+select *from borrower;
