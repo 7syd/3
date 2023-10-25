@@ -11,7 +11,7 @@ insert into emp_mast values ( 101,'Aryan', 'Gole','Manish','Finance'),(102,'Anis
 Insert into branch_mast values ('Finance',2022,101),('Marketing',2023,102),('Design',2021,103);
 Select emp_mast.emp_no,emp_mast.f_name,emp_mast.m_name,emp_mast.l_name,branch_mast.branch_name from emp_mast INNER JOIN branch_mast ON emp_mast.emp_no = branch_mast.emp_no;
 create table teacher(t_id int(3),t_name varchar(20),t_add varchar(20),t_sub varchar(20),t_salary int(6),s_id int(3),s_name varchar(20),s_add varchar(20),s_marks int(3));
-insert into teacher values(100,'Sara','Delhi','DM', 20000, 20,'Ken','Pune',95), (102,'Sid','Mumbai','M2',20000, 22,'Dan','Nagpur', 80)(103,'Kiran','Mumbai','Stat',20000, 24,'Priya','Pune', 85);
+insert into teacher values(100,'Sara','Delhi','DM', 20000, 20,'Ken','Pune',95), (102,'Sid','Mumbai','M2',20000, 22,'Dan','Nagpur', 80),(103,'Kiran','Mumbai','Stat',20000, 24,'Priya','Pune', 85);
 Create view student as select s_id ,s_name,s_add,s_marks from teacher;
 Insert into student values(60,'Aaray','Pune', 92);
 select* from student;
