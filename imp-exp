@@ -1,0 +1,17 @@
+create database importexport;
+use importexport;
+create table fine (Id int, Name varchar(30), Fine int);
+load data infile "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\fine.csv"
+into table fine
+fields terminated by ','
+optionally enclosed by '"'
+lines terminated by '\n'
+ignore 1 rows;
+
+
+select * from fine
+into outfile "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\fine_backup.csv"
+fields terminated by ','
+optionally enclosed by '"'
+lines terminated by '\r\n';
+
