@@ -1,0 +1,51 @@
+CREATE TABLE Borrower(
+Roll_no INT(3),
+Name VARCHAR(20),
+Date_of_Issue DATE,
+Name_of_Book VARCHAR(20),
+ Status CHAR(1));
+
+CREATE TABLE Fine(
+Roll_no INT(3),
+C_date DATE,
+Amt DECIMAL(4,2));
+
+INSERT INTO Borrower VALUES(101,"sidd",'2023-09-1','M2','I');
+
+INSERT INTO Borrower VALUES(102,"aryan",'2023-08-1','AI','I');
+
+INSERT INTO Borrower VALUES(103,"aron",'2023-09-20','DM','I');
+
+DELIMITER $$
+
+CREATE PROCEDURE ReturnBook(IN PRoll_No INT)
+BEGIN
+DECLARE fine_amt INT;
+DECLARE no_of_days INT;
+DECLARE issuedate DATE;
+SELECT Date_of_Issue
+INTO issuedate
+FROM Borrower
+WHERE
+Roll_no = PRoll_No;
+
+SET no_of_days = DATEDIFF(CURRENT_DATE(),issuedate);
+
+IF no_of_days < 15 THEN
+  SET fine_amt = 0;
+ELSEIF no_of_days >= 15 AND no_of_days <= 30 THEN
+  SET fine_amt = 5;
+ELSE
+  SET fine_amt = 50;
+END IF;
+
+INSERT INTO Fine(Roll_No,C_date,Amt) VALUES (PRoll_No, CURRENT_DATE(), fine_amt);
+UPDATE Borrower SET status = 'R' WHERE Roll_no = PRoll_NO;
+END $$
+
+DELIMITER ;
+SELECT *FROM Borrower;
+CALL ReturnBook(101);
+CALL ReturnBook(102);
+CALL ReturnBook(103);
+SELECT *FROM Fine;
