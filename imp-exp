@@ -10,7 +10,7 @@ ignore 1 rows;
 
 
 select * from fine
-into outfile "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\fine_backup.csv"
+into outfile "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/fine_backup.csv"
 fields terminated by ','
 optionally enclosed by '"'
 lines terminated by '\r\n';
