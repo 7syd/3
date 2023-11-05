@@ -1,4 +1,4 @@
-db.CreateCollection('orange')
+db.createCollection('orange')
 db.orange.insertOne({name:"sam",age:19,salary:10000});
 db.orange.insertMany([{name: "sidd",age:20,salary:100000},{name: "vikk",age:20,salary:100500}]);
 db.test.find();
